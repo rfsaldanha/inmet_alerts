@@ -28,6 +28,13 @@ cli_alert_success("Done!")
 
 # First write. Keep it commented.
 # dbWriteTable(conn = con, name = "alerts", value = res)
+dbExecute(
+  con,
+  "COPY (SELECT * FROM 'alerts') TO '~/inmet_alerts/inmetalerts.parquet' (FORMAT 'PARQUET')"
+)
+system(
+  "rclone copy ~/inmet_alerts/inmetalerts.parquet digitalocean:inmetalerts"
+)
 
 cli_alert("Fetching already available IDs in database...")
 database_ids <- tbl(con, "alerts") |>
