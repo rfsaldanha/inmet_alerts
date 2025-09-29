@@ -23,7 +23,8 @@ if (nrow(res) < 0) {
 
 # Database connection
 cli_alert("Connecting to database...")
-con <- dbConnect(duckdb(), "~/inmet_alerts/inmetrss.duckdb")
+# con <- dbConnect(duckdb(), "~/inmet_alerts/inmetrss.duckdb")
+con <- dbConnect(duckdb(), "inmetrss.duckdb")
 cli_alert_success("Done!")
 
 # First write. Keep it commented.
@@ -44,6 +45,19 @@ cli_alert_success("Done!")
 if (nrow(new_data) > 0) {
   cli_alert("Writing new alerts to database ({nrow(new_data)} alerts)...")
   dbWriteTable(conn = con, name = "alerts", value = new_data, append = TRUE)
+
+  cli_alert("Exporting parquet file...")
+  dbExecute(
+    con,
+    "COPY (SELECT * FROM 'alerts') TO '~/inmet_alerts/inmetalerts.parquet' (FORMAT 'PARQUET')"
+  )
+
+  cli_alert("Copying parquet file to Digital Ocean spaces...")
+  system(
+    "rclone copy ~/inmet_alerts/inmetalerts.parquet digitalocean:inmetalerts"
+  )
+
+  cli_alert_success("Done!")
 } else {
   cli_alert_warning("There is no new alerts to write in the database.")
 }
