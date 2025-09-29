@@ -23,7 +23,7 @@ if (nrow(res) < 0) {
 
 # Database connection
 cli_alert("Connecting to database...")
-con <- dbConnect(duckdb(), "inmetrss.duckdb")
+con <- dbConnect(duckdb(), "~/inmet_alerts/inmetrss.duckdb")
 cli_alert_success("Done!")
 
 # First write. Keep it commented.
