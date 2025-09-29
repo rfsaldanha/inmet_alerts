@@ -30,7 +30,7 @@ cli_alert_success("Done!")
 # dbWriteTable(conn = con, name = "alerts", value = res)
 
 cli_alert("Fetching already available IDs in database...")
-database_ids <- tbl(src = con, from = "alerts") |>
+database_ids <- tbl(con, "alerts") |>
   select(identifier) |>
   pull(identifier)
 cli_alert_success("Done!")
