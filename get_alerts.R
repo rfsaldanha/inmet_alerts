@@ -1,5 +1,5 @@
 # Packages
-suppressWarnings({
+suppressMessages({
   library(dplyr)
   library(DBI)
   library(duckdb)
